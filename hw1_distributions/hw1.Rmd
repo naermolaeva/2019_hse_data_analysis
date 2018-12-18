@@ -1,0 +1,22 @@
+---
+title: "hw1"
+author: "Наташа Ермолаева"
+date: "18 12 2018"
+output: html_document
+---
+
+### 1.1
+
+```{r, include=FALSE}
+integrand <- function(x) {dlnorm(x = x, mean = 3, sd = 0.5)}
+integrate(integrand, 25, 50)
+```
+
+### 1.2
+
+```{r, include=FALSE}
+# integrand <- function(x) {dlnorm(x = x, mean = 3, sd = 0.5)}
+lower <- qlnorm(0.1, meanlog = 3, sdlog = 0.5)
+upper <- qlnorm(0.9, meanlog = 3, sdlog = 0.5)
+integrate(integrand, lower, upper)
+```
