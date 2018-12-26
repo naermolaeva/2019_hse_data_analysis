@@ -27,8 +27,8 @@ languages[max_value, 1]
 alpha <- 9.300246
 beta <- 4.4545 
 
-post_proportion = (consonants + alpha) / (phonemes + alpha + beta)
-diff_mod = abs(consonants_proportion - post_proportion)
+post_proportion <- (consonants + alpha) / (phonemes + alpha + beta)
+diff_mod <- abs(consonants_proportion - post_proportion)
 data$diff_mod <- diff_mod
 
 library(plyr)
