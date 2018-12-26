@@ -1,0 +1,36 @@
+---
+title: "hw2"
+author: "Наташа Ермолаева"
+date: "26 12 2018"
+output: html_document
+---
+
+### 2.1
+
+```{r, include=FALSE}
+data <- read.csv('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/naermolaeva/hw2_Bayesian_inference/hw2_phoible.csv')
+
+language <- data$language
+consonants <- data$consonants
+phonemes <- data$phonemes
+
+consonants_proportion <- consonants / phonemes
+languages <- cbind(data, consonants_proportion)
+max_value <- which.max(languages$consonants_proportion)
+
+languages[max_value, 1]
+```
+
+### 2.2
+
+```{r, include=FALSE}
+alpha <- 9.300246
+beta <- 4.4545 
+
+post_proportion = (consonants + alpha) / (phonemes + alpha + beta)
+diff_mod = abs(consonants_proportion - post_proportion)
+data$diff_mod <- diff_mod
+
+library(plyr)
+arrange(data, desc(data$diff_mod))[1:6,][,1]
+```
