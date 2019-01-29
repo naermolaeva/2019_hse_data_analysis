@@ -1,0 +1,58 @@
+---
+title: "hw3"
+author: "Наташа Ермолаева"
+date: "27 01 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### 3.1
+
+```{r}
+data_1 <- read.csv('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/naermolaeva/hw3_Bayesian_inference/hw3_phoible.csv')
+
+consonants <- data_1$consonants
+data_1$likelihood <- dnorm(consonants, mean = 22, sd = 6)
+
+prod(data_1$likelihood)
+```
+
+### 3.2
+
+```{r}
+data_2 <- read.csv('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/letter_frequency.csv')
+
+get_row <- function(let) {
+    as.numeric(data_2[grep(let, data_2$letter),][,-14])
+  }
+
+m <- get_row('m')
+o <- get_row('o')
+s <- get_row('s')
+t <- get_row('t')
+
+prior <- 1 / (ncol(data_2) - 1)
+likelihood <- m * o * s * t
+product <- prior * likelihood
+posterior <- product / sum(product)
+
+results <- data.frame(columns = colnames(data_2[,-14]),
+                      prior = prior,
+                      likelihood = likelihood,
+                      product = product,
+                      posterior = posterior)
+
+max(results$posterior)
+```
+
+### 3.3
+
+```{r}
+data_3 <- read.csv('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/naermolaeva/hw3_Bayesian_inference/hw3_task_3.csv')
+
+shape1 <- as.numeric(data_3$a) + 33
+shape2 <- as.numeric(data_3$b) + 77
+
+shape1 / (shape1 + shape2)
+```
