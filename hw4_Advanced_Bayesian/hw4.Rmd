@@ -1,0 +1,54 @@
+---
+title: "hw4"
+author: "Наташа Ермолаева"
+date: "09 02 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### 4.1
+
+```{r}
+data <- read.csv('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/naermolaeva/hw4_Advanced_Bayesian/hw4_caretta.csv')
+
+data_mean <- mean(data$vowel.dur, trim = 0.1)
+data_sd <- sd(data$vowel.dur)
+
+brs02 <- data$vowel.dur[data$speaker == 'brs02']
+
+brs02_mean <- mean(brs02)
+brs02_sd <- sd(brs02)
+
+get_mean <- function(speaker_mean, speaker_sd) {
+  posterior_mean <- weighted.mean(c(data_mean, speaker_mean),
+                                c(1 / data_sd, 1 / speaker_sd)
+                                )
+  }
+
+get_sd <- function(speaker_sd) {
+  posterior_sd <- (1 / data_sd + 1 / speaker_sd)^(-1)
+  }
+
+data.frame(speaker = 'brs02', 
+           mean = get_mean(brs02_mean, brs02_sd),
+           sd = get_sd(brs02_sd)
+           )
+```
+
+### 4.2
+
+```{r}
+tt01 <- data$vowel.dur[data$speaker == 'tt01']
+
+tt01_mean <- mean(tt01)
+tt01_sd <- sd(tt01)
+
+tt01_post_mean <- get_mean(tt01_mean, tt01_sd)
+tt01_post_sd <- get_sd(tt01_sd)
+
+data.frame(speaker = 'tt01',
+           cred_int_l = qnorm(.025, tt01_post_mean, tt01_post_sd),
+           cred_int_h = qnorm(.975, tt01_post_mean, tt01_post_sd)
+           )
+```
