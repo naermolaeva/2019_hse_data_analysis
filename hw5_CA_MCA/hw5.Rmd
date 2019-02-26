@@ -1,0 +1,87 @@
+---
+title: "hw5"
+author: "Наташа Ермолаева"
+date: "25 02 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### 5.1
+
+```{r}
+library(magrittr)
+library(ggplot2)
+library(tibble)
+
+chairs <- read.csv('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/naermolaeva/hw5_CA_MCA/hw5_chairs.csv')
+
+MCA <- MASS::mca(chairs[, !names(chairs) %in% c('Shop', 'WordDE', 'Category')])
+
+data <- cbind(chairs, MCA$rs)
+variables <- as_data_frame(MCA$cs)
+variables$var_names <- rownames(MCA$cs)
+data %>% 
+  ggplot(aes(`1`, `2`))+
+  geom_point(aes(color = Category))+
+  stat_ellipse(aes(color = Category))+
+  geom_text(data = variables, aes(`1`, `2`, label = var_names))+
+  theme_bw()+
+  scale_x_continuous(limits = c(-0.015, 0.02))
+```
+
+### 5.2
+
+На основании полученного графика мы можем сделать вывод о том, что, несмотря на то, что Sessel и Stuhl являются различными категориями (примеры их различий приведены в списке ниже), ряд признаков у данных объектов все-таки оказывается общим (например, Age.Adult).
+
+Список некоторых характеристик, которые позволяют четко разграничить Sessel и Stuhl между собой:
+
+ Sessel            | Stuhl                         
+ ----------------- | ------------------------------ 
+ Function.Relax    | Function.Eat or Finction.Work 
+ SeatDepth.Deep    | SeatDepth.Norm                
+ Roll.No           | Roll.Yes                      
+ Recline.Yes       | Recline.No                    
+ AddFunctions.Bed  | AddFunctions.Table
+ 
+
+### 5.3
+
+```{r}
+library(ca)
+
+colreg <- read.csv('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/naermolaeva/hw5_CA_MCA/hw5_colreg.csv')
+
+rownames(colreg) <- colreg$colors
+ca <- ca(colreg[-5])
+
+colreg_col <- data.frame(ca$colcoord)
+colreg_col$rows <- rownames(ca$colcoord)
+
+colreg_row <- data.frame(ca$rowcoord)
+colreg_row$rows <- rownames(ca$rowcoord)
+
+colreg_col %>% 
+  ggplot(aes(Dim1, Dim2, label = rows))+
+  geom_text(color = 'blue')+
+  geom_text(data = colreg_row, color = 'red')+
+  theme_bw()+
+  labs(x = 'Dim1',
+       y = 'Dim2')
+```
+
+### 5.4
+
+Данные для задания 5.3 были взяты из Corpus of Contemporary American English. Возможно, в связи с этим, в подкорпусе, состоящем из примеров разговорной (SPOKEN) речи, наиболее употребительным является черный цвет (black) в силу того, что в США (и в американском английском в целом) употребление слова black в отношении темнокожего человека считается абсолютно корректным и "правильным", а именно потому и частотным: black woman, black person, black culture. (Это наблюдение действительно подтверждается поиском по подкорпусу SPOKEN в COCA). 
+
+То же касается и white: данное обозначение употребляется по отношению к цвету кожи: white females, white men, white race и др., при этом достаточно равномерно во всех подкорпусах.
+
+Следующий хорошо заметный кластер -- это подкорпус художественной литературы (FICTION), где мы можем заметить наибольшую концентрацию различных цветовых обозначений. Вероятно, это связано с тем, что в художественной литературе прилагательные-эпитеты (к которым также относятся и цвета) в целом являются достаточно частотными.
+
+Что касается кластера СМИ (PRESS), поиск orange по данному подкорпусу (PRESS/MAGAZINE) в COCA показывает большое количество примеров, содержащих "Orange Country" (округ в Калифорнии). Возможно, в данном подкорпусе собрано некоторое (и достаточно большое) количество статей из газет/журналов, описывающих какие-либо события, происходящие в данном регионе.
+
+Также для red в подкорпусе PRESS находим: red carpet (в статьях, повествующих о каких-либо официальных церемониях), red wine (публикации о(б) употреблении/свойствах красного вина) и др.
+
+Зеленый цвет (green) часто употребляется в статьях, содержащих информацию об экологии (в основном), например, green projects.
+
+В подкорпусе ACADEMIC цветообозначения в целом употребляются достаточно редко (кроме white и black, которые, как было показано выше, в подобных текстах чаще всего описывают цвет кожи), так как, кажется, для текстов, написанных в академическом стиле, обычно несвойственно употребление прилагательных, обозначающих цвета.
